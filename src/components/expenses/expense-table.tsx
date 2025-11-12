@@ -16,6 +16,7 @@ import {
   IconChevronsRight,
   IconDotsVertical,
   IconPlus,
+  IconFolderDown,
 } from "@tabler/icons-react"
 import {
   ColumnDef,
@@ -64,7 +65,7 @@ import {
 } from "@/components/ui/tabs"
 
 import { schema } from "@/schema/expense-schema";
-
+import { handleTicketDownload } from "@/services/fileService"
 const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     accessorKey: "payment_concept",
@@ -132,6 +133,23 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
         }).replace(',', '')}
       </span>
     ),
+  },
+  {
+    accessorKey: "filename",
+    header: "Attachment",
+    cell: ({ row }) => {
+      return (
+        <>
+          {row.original.file_name ? (
+            <Button onClick={() => handleTicketDownload(row.original.id)}>
+              <IconFolderDown />
+            </Button>
+          ) : (
+            <span className="text-muted-foreground italic">Null</span>
+          )}
+        </>
+      )
+    },
   },
   {
     accessorKey: "note",
@@ -225,7 +243,7 @@ export function DataTable({
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm">
             <IconPlus />
-            <span className="hidden lg:inline">Add Item</span>
+            <span className="hidden lg:inline dark:text-foreground">Add Item</span>
           </Button>
         </div>
       </div>

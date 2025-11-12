@@ -9,5 +9,6 @@ export const schema = z.object({
     tax: z.number(),
     total: z.number(),
     payment_date: z.string(),
+    file_name: z.string().optional(),
     created_at: z.string()
 });

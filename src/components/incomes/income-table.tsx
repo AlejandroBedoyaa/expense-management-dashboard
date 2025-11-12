@@ -213,7 +213,7 @@ export function DataTable({
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm">
             <IconPlus />
-            <span className="hidden lg:inline">Add Item</span>
+            <span className="hidden lg:inline dark:text-foreground">Add Item</span>
           </Button>
         </div>
       </div>
