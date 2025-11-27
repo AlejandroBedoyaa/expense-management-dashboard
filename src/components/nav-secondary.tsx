@@ -31,7 +31,7 @@ export function NavSecondary({
           </SidebarMenuItem>
           <SidebarMenuItem key="logout">
             <SidebarMenuButton asChild>
-              <LogoutButton className="bg-red-700 text-white dark:bg-red-700 dark:text-white hover:bg-red-800 hover:text-white active:bg-red-900 min-w-8 duration-200 ease-linear" />
+              <LogoutButton className="bg-red-500 text-white dark:bg-red-500 dark:text-white hover:bg-red-600 hover:text-white active:bg-red-700 min-w-8 duration-200 ease-linear" />
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

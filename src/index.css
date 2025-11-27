@@ -344,4 +344,40 @@
     font-family: var(--font-mono);
     font-size: 0.8rem;
   }
+
+   /* Modo claro */
+  [data-sonner-toast][data-type="success"] {
+    background-color: #22c55e !important;
+    color: #fff !important;
+  }
+  [data-sonner-toast][data-type="error"] {
+    background-color: #ef4444 !important;
+    color: #fff !important;
+  }
+  [data-sonner-toast][data-type="info"] {
+    background-color: #0ea5e9 !important;
+    color: #fff !important;
+  }
+  [data-sonner-toast][data-type="warning"] {
+    background-color: #facc15 !important;
+    color: #000 !important;
+  }
+
+  /* Modo oscuro con Tailwind (asegúrate que la clase 'dark' esté en <html> o <body>) */
+  .dark [data-sonner-toast][data-type="success"] {
+    background-color: #15803d !important;
+    color: #fff !important;
+  }
+  .dark [data-sonner-toast][data-type="error"] {
+    background-color: #991b1b !important;
+    color: #fff !important;
+  }
+  .dark [data-sonner-toast][data-type="info"] {
+    background-color: #0369a1 !important;
+    color: #fff !important;
+  }
+  .dark [data-sonner-toast][data-type="warning"] {
+    background-color: #ca8a04 !important;
+    color: #fff !important;
+  }
 }

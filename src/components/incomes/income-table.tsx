@@ -15,7 +15,6 @@ import {
   IconChevronsLeft,
   IconChevronsRight,
   IconDotsVertical,
-  IconPlus,
 } from "@tabler/icons-react"
 import {
   ColumnDef,
@@ -62,122 +61,129 @@ import {
   TabsContent,
 } from "@/components/ui/tabs"
 
-import { schema } from "@/schema/income-schema";
+import { incomeSchema } from "@/schema/income-schema";
+import { useIncomes } from "@/hooks/useIncomes"
+import { deleteIncomeById } from "@/services/incomeService"
+import { toast } from "sonner"
 
-const columns: ColumnDef<z.infer<typeof schema>>[] = [
-  {
-    accessorKey: "source",
-    header: "Source",
-    cell: ({ row }) => {
-      return row.original.source
-    },
-    enableHiding: false,
-  },
-  {
-    accessorKey: "amount",
-    header: "Amount",
-    cell: ({ row }) => {
-      const amount = parseFloat(row.original.amount.toString() || "0")
+export function DataTable({ data }: { data: z.infer<typeof incomeSchema>[] }) {
+  const { refetch } = useIncomes()
 
-      // Format the amount as a currency amount
-      const formatted = new Intl.NumberFormat("es-ES", {
-        style: "currency",
-        currency: "MXN",
-      }).format(amount)
-
-      return <div className="font-medium">{formatted}</div>
-    },
-    accessorFn: (row) => row.amount,
-  },
-  {
-    accessorKey: "income_date",
-    header: "Income date",
-    cell: ({ row }) => (
-      <span>
-        {new Date(row.original.income_date).toLocaleString('es-ES', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false
-        }).replace(',', '')}
-      </span>
-    ),
-  },
-  {
-    accessorKey: "created_at",
-    header: "Created at",
-    cell: ({ row }) => (
-      <span>
-        {new Date(row.original.created_at).toLocaleString('es-ES', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false
-        }).replace(',', '')}
-      </span>
-    ),
-  },
-  {
-    accessorKey: "description",
-    header: "Description",
-    cell: ({ row }) => (
-      <span className={row.original.description ? "" : "text-muted-foreground italic"}>
-        {row.original.description || "Null"}
-      </span>
-    ),
-  },
-  {
-    id: "actions",
-    header: "Actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
-  },
-]
-
-export function DataTable({
-  data: initialData,
-}: {
-  data: z.infer<typeof schema>[]
-}) {
-  const [data] = React.useState(() => initialData)
   const [rowSelection, setRowSelection] = React.useState({})
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [pagination, setPagination] = React.useState({
-    pageIndex: 0,
-    pageSize: 10,
-  })
+  const [pagination, setPagination] = React.useState({ pageIndex: 0, pageSize: 10 })
+
   const sortableId = React.useId()
   const sensors = useSensors(
     useSensor(MouseSensor, {}),
     useSensor(TouchSensor, {}),
     useSensor(KeyboardSensor, {})
   )
+
+  const columns: ColumnDef<z.infer<typeof incomeSchema>>[] = React.useMemo(() => ([
+    {
+      accessorKey: "source",
+      header: "Source",
+      cell: ({ row }) => row.original.source,
+      enableHiding: false,
+    },
+    {
+      accessorKey: "amount",
+      header: "Amount",
+      cell: ({ row }) => {
+        const amount = parseFloat(row.original.amount.toString() || "0")
+        const formatted = new Intl.NumberFormat("en-US", {
+          style: "decimal",
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }).format(amount)
+        return <div className="font-medium">{formatted}</div>
+      },
+      accessorFn: (row) => row.amount,
+    },
+    {
+      accessorKey: "income_date",
+      header: "Income date",
+      cell: ({ row }) => (
+        <span>
+          {new Date(row.original.income_date).toLocaleString('es-ES', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          }).replace(',', '')}
+        </span>
+      ),
+    },
+    {
+      accessorKey: "created_at",
+      header: "Created at",
+      cell: ({ row }) => (
+        <span>
+          {new Date(row.original.created_at).toLocaleString('es-ES', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          }).replace(',', '')}
+        </span>
+      ),
+    },
+    {
+      accessorKey: "description",
+      header: "Description",
+      cell: ({ row }) => (
+        <span className={row.original.description ? "" : "text-muted-foreground italic"}>
+          {row.original.description || "Null"}
+        </span>
+      ),
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+              size="icon"
+            >
+              <IconDotsVertical />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-32">
+            <DropdownMenuItem>Edit</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              variant="destructive"
+              onClick={async () => {
+                const confirmed = window.confirm("Are you sure you want to delete this income?")
+                if (!confirmed) return
+                try {
+                  await deleteIncomeById(row.original.id.toString())
+                  toast.success("Income deleted")
+                  await refetch()
+                } catch (err) {
+                  const message = err instanceof Error ? err.message : "Failed to delete income"
+                  toast.error(message)
+                }
+              }}
+            >
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
+    },
+  ]), [refetch])
 
   const table = useReactTable({
     data,
@@ -209,14 +215,6 @@ export function DataTable({
       defaultValue="outline"
       className="w-full flex-col justify-start gap-6"
     >
-      <div className="flex items-center justify-between px-4 lg:px-6">
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm">
-            <IconPlus />
-            <span className="hidden lg:inline dark:text-foreground">Add Item</span>
-          </Button>
-        </div>
-      </div>
       <TabsContent
         value="outline"
         className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
@@ -290,7 +288,7 @@ export function DataTable({
                   table.setPageSize(Number(value))
                 }}
               >
-                <SelectTrigger size="sm" className="w-20" id="rows-per-page">
+                <SelectTrigger size="sm" className="w-20 dark:text-foreground" id="rows-per-page">
                   <SelectValue
                     placeholder={table.getState().pagination.pageSize}
                   />
@@ -304,14 +302,14 @@ export function DataTable({
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex w-fit items-center justify-center text-sm font-medium">
+            <div className="flex w-fit items-center justify-center text-sm font-medium dark:text-foreground">
               Page {table.getState().pagination.pageIndex + 1} of{" "}
               {table.getPageCount()}
             </div>
             <div className="ml-auto flex items-center gap-2 lg:ml-0">
               <Button
                 variant="outline"
-                className="hidden h-8 w-8 p-0 lg:flex"
+                className="hidden h-8 w-8 p-0 lg:flex dark:text-foreground"
                 onClick={() => table.setPageIndex(0)}
                 disabled={!table.getCanPreviousPage()}
               >
@@ -320,7 +318,7 @@ export function DataTable({
               </Button>
               <Button
                 variant="outline"
-                className="size-8"
+                className="size-8 dark:text-foreground"
                 size="icon"
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
@@ -330,7 +328,7 @@ export function DataTable({
               </Button>
               <Button
                 variant="outline"
-                className="size-8"
+                className="size-8 dark:text-foreground"
                 size="icon"
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
@@ -340,7 +338,7 @@ export function DataTable({
               </Button>
               <Button
                 variant="outline"
-                className="hidden size-8 lg:flex"
+                className="hidden size-8 lg:flex dark:text-foreground"
                 size="icon"
                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                 disabled={!table.getCanNextPage()}

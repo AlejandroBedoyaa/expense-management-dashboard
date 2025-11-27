@@ -1,5 +1,4 @@
 import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react"
-
 import { Badge } from "@/components/ui/badge"
 import {
   Card,
@@ -9,92 +8,126 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { z } from "zod"
+import { schema } from "@/schema/balance-schema";
+import { monthlyExpensesSchema } from "@/schema/expense-schema";
+import { monthlyIncomesSchema } from "@/schema/income-schema";
 
-export function SectionCards() {
+
+interface SectionCardsProps {
+  balances?: z.infer<typeof schema>;
+  incomes?: z.infer<typeof monthlyIncomesSchema>;
+  expenses?: z.infer<typeof monthlyExpensesSchema>;
+}
+
+export function SectionCards({ 
+  balances,
+  incomes,
+  expenses,
+}: SectionCardsProps) {
+  console.log("SectionCards balances:", balances);
+  console.log("SectionCards incomes:", incomes);
+  console.log("SectionCards expenses:", expenses);
+
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Accumulated Balance</CardDescription>
+          <CardDescription>Monthly Balance</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            $1,250.00
+            {(balances?.balance ?? 0).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
-              <IconTrendingUp />
-              +12.5%
+              {(balances?.balance_percentage ?? 0) >= 0  
+              ? (<><IconTrendingUp className="text-green-500" />+{(balances?.balance_percentage ?? 0).toFixed(2)}%</>)
+              : (<><IconTrendingDown className="text-red-500" />-{(balances?.balance_percentage ?? 0).toFixed(2)}%</>)
+              }
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Trending up this month <IconTrendingUp className="size-4" />
+            {(balances?.balance_percentage ?? 0) >= 0  
+            ? (<>Trending up this month <IconTrendingUp className="size-4 text-green-500" /></>)
+            : (<>Down this month <IconTrendingDown className="size-4 text-red-500" /></>)
+            }
           </div>
           <div className="text-muted-foreground">
-            Visitors for the last 6 months
+            Balance for the current month
           </div>
         </CardFooter>
       </Card>
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Expenses</CardDescription>
+          <CardDescription>Monthly Expenses</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            1,234
+            {(expenses?.total_expenses ?? 0).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
-              <IconTrendingDown />
-              -20%
+              {(expenses?.improvement)  
+              ? (<><IconTrendingDown className="text-green-500" />{(expenses?.percentage_change ?? 0).toFixed(2)}%</>)
+              : (<><IconTrendingUp className="text-red-500" />+{(expenses?.percentage_change ?? 0).toFixed(2)}%</>)
+              }
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Down 20% this period <IconTrendingDown className="size-4" />
+            {(expenses?.improvement)  
+            ? (<>Waste down from last month <IconTrendingDown className="size-4 text-green-500" /></>)
+            : (<>Waste up from last month <IconTrendingUp className="size-4 text-red-500" /></>)
+            }
           </div>
           <div className="text-muted-foreground">
-            Acquisition needs attention
+            Expenses from the current month
           </div>
         </CardFooter>
       </Card>
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Incomes</CardDescription>
+          <CardDescription>Monthly Incomes</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            45,678
+            {(incomes?.total_incomes ?? 0).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
-              <IconTrendingUp />
-              +12.5%
+              {(incomes?.improvement)  
+              ? (<><IconTrendingUp className="text-green-500" />+{(incomes?.percentage_change ?? 0).toFixed(2)}%</>)
+              : (<><IconTrendingDown className="text-red-500" />-{(incomes?.percentage_change ?? 0).toFixed(2)}%</>)
+              }
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Strong user retention <IconTrendingUp className="size-4" />
+            {(incomes?.improvement)  
+            ? (<>More incomes this month <IconTrendingUp className="size-4 text-green-500" /></>)
+            : (<>Less incomes this month <IconTrendingDown className="size-4 text-red-500" /></>)
+            }
           </div>
-          <div className="text-muted-foreground">Engagement exceed targets</div>
+          <div className="text-muted-foreground">Incomes for the current month</div>
         </CardFooter>
       </Card>
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Balance</CardDescription>
+          <CardDescription>Pending to use</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            4.5%
+            X.X%
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
               <IconTrendingUp />
-              +4.5%
+              +X.X%
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Steady performance increase <IconTrendingUp className="size-4" />
+            XXXXXXXX <IconTrendingUp className="size-4" />
           </div>
-          <div className="text-muted-foreground">Meets growth projections</div>
+          <div className="text-muted-foreground">Card on develop</div>
         </CardFooter>
       </Card>
     </div>

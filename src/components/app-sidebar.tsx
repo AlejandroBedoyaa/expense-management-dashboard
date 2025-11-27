@@ -1,6 +1,6 @@
 import * as React from "react"
 import {
-  IconInnerShadowTop,
+  IconDog,
 } from "@tabler/icons-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -26,8 +26,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <a href="#">
-                <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">USERNAME</span>
+                <IconDog className="!size-5" />
+                <span className="text-base font-semibold">Expense management</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

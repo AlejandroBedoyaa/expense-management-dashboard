@@ -1,4 +1,5 @@
 import { IconDashboardFilled, IconCoinOff, IconPremiumRights } from "@tabler/icons-react"
+import { useLocation } from "react-router-dom"
 
 import {
   SidebarGroup,
@@ -9,6 +10,9 @@ import {
 } from "@/components/ui/sidebar"
 
 export function NavMain() {
+  const location = useLocation()
+  const isActive = (path: string) => location.pathname === path || location.pathname.startsWith(path + '/')
+  
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
@@ -17,7 +21,7 @@ export function NavMain() {
             <SidebarMenuButton
               asChild
               tooltip="Dashboard"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear"
+              className={isActive('/dashboard') ? "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear" : ""}
             >
               <a href="/dashboard">
                 <IconDashboardFilled />
@@ -26,7 +30,10 @@ export function NavMain() {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem key="expenses">
-            <SidebarMenuButton asChild tooltip="Expenses">
+            <SidebarMenuButton 
+              asChild 
+              tooltip="Expenses"
+              className={isActive('/expenses') ? "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear" : ""}>
               <a href="/expenses">
                 <IconCoinOff />
                 <span>Expenses</span>
@@ -34,7 +41,10 @@ export function NavMain() {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem key="incomes">
-            <SidebarMenuButton asChild tooltip="Incomes">
+            <SidebarMenuButton 
+              asChild
+              tooltip="Incomes"
+              className={isActive('/incomes') ? "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear" : ""}>
               <a href="/incomes">
                 <IconPremiumRights />
                 <span>Incomes</span>

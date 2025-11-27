@@ -1,10 +1,10 @@
 import { Navigate, Outlet } from "react-router-dom"
-import { useAuth } from "@/hooks/useAuth"
+import authService from "@/services/authService"
 import { cn } from "@/lib/utils"
 import { Spinner } from "@/components/ui/spinner"
 
 export function RequireAuth() {
-    const { loading, isAuth } = useAuth()
+    const { loading, isAuth } = authService.useAuth()
 
     if (loading) {
     return (

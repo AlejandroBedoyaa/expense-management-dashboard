@@ -1,7 +1,9 @@
+import { getToken } from './authService';
+
 const API_URL = import.meta.env.VITE_API_URL
 
 export function handleTicketDownload(fileId: string) {
-    const token = localStorage.getItem('access_token')
+    const token = getToken()
     fetch(`${API_URL}/file/ticket/${fileId}`, {
         method: 'GET',
         headers: {
