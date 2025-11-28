@@ -8,10 +8,10 @@ import { Toaster } from "@/components/ui/sonner"
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+  // <StrictMode>
     <QueryClientProvider client={queryClient}>
       <App />
       <Toaster />
     </QueryClientProvider>
-  </StrictMode>,
+  // </StrictMode>,
 )
