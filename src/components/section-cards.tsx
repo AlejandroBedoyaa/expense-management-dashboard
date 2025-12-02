@@ -95,7 +95,7 @@ export function SectionCards({
             <Badge variant="outline">
               {(incomes?.improvement)  
               ? (<><IconTrendingUp className="text-green-500" />+{(incomes?.percentage_change ?? 0).toFixed(2)}%</>)
-              : (<><IconTrendingDown className="text-red-500" />-{(incomes?.percentage_change ?? 0).toFixed(2)}%</>)
+              : (<><IconTrendingDown className="text-red-500" />{(incomes?.percentage_change ?? 0).toFixed(2)}%</>)
               }
             </Badge>
           </CardAction>
