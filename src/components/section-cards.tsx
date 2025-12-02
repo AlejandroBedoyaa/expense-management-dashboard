@@ -112,7 +112,7 @@ export function SectionCards({
         <CardHeader>
           <CardDescription>Total balance</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {(totalBalance?.total_balance ?? 0).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}
+            {(totalBalance ?? 0).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">

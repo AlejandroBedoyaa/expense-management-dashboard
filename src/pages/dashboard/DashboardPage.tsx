@@ -34,7 +34,6 @@ function DashboardPage() {
                     <SkeletonCard />
                     <SkeletonCard />
                     <SkeletonCard />
-                    <SkeletonCard />
                 </div>
             ) : (
                 <SectionCards 
