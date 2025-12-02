@@ -15,12 +15,12 @@ export function useMonthlyBalance() {
     });
 }
 
-export function useCurrentBalance() {
+export function useTotalBalance() {
     return useQuery({
         queryKey: ['balances'],
         queryFn: async () => {
             const token = getToken();
-            const res = await fetch(`${API_URL}/balance/current`, { headers: { Authorization: `Bearer ${token}` } });
+            const res = await fetch(`${API_URL}/balance/total`, { headers: { Authorization: `Bearer ${token}` } });
             if (!res.ok) throw new Error('Error fetching balances');
                 return await res.json();
         }

@@ -16,3 +16,7 @@ export const balanceChartDataSchema = z.array(
         expense: z.number()
     })
 );
+
+export const totalBalanceSchema = z.object({
+    total_balance: z.number()
+});
